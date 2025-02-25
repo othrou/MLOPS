@@ -5,7 +5,7 @@ on: [push]
 jobs:
   run:
     runs-on: ubuntu-latest
-    container: docker://dvcor/cml-py3:latest
+    container: docker://ghcr.io/iterative/cml:latest
 
     steps:
       # Checkout the repository to the workflow
