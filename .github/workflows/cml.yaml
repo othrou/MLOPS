@@ -1,18 +1,28 @@
 name: model-wine-quality
 
-on: [push]
+on:
+  push:
+    branches:
+      - main  # Replace with your default branch
+  pull_request:
+    branches:
+      - main  # Replace with your default branch
 
 jobs:
   run:
     runs-on: ubuntu-latest
     container: docker://ghcr.io/iterative/cml:latest
 
+    permissions:
+      pull-requests: write
+      contents: write
+
     steps:
       # Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}  # Pass the GitHub token to the environment for checkout
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       # Install dependencies and train the model
       - name: Train model
@@ -37,7 +47,7 @@ jobs:
           # Publish the report as a comment
           cml comment create report.md
         env:
-          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Ensure that the token is passed here
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Optional: Publish the final report
       - name: Publish final report
