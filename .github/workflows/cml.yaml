@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v2
         name: Checkout code
         env:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}  # Pass the GitHub token to the environment
+          repo_token: ${{ secrets.GITHUB_TOKEN }}  # Pass the GitHub token to the environment for checkout
 
       # Install dependencies and train the model
       - name: Train model
@@ -33,11 +33,14 @@ jobs:
           echo "## Data viz" >> report.md
           cml-publish feature_importance.png --md >> report.md
           cml-publish residuals.png --md >> report.md
+
+          # Publish the report as a comment
+          cml-publish-comment report.md
         env:
           repo_token: ${{ secrets.GITHUB_TOKEN }}  # Ensure that the token is passed here
 
       # Optional: Publish the final report
-      - name: Publish report
+      - name: Publish final report
         run: |
           echo "## Summary Report" > summary_report.md
           cat report.md >> summary_report.md
