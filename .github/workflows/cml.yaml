@@ -21,8 +21,8 @@ jobs:
           python train.py  # Run the training script
 
           # Log model metrics
-          # echo "MODEL METRICS" 
-          # cat metrics.txt 
+          echo "MODEL METRICS" 
+          cat metrics.txt 
 
           echo "## Model metrics" > report.md
           cat metrics.txt >> report.md
