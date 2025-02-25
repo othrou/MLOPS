@@ -1,0 +1,39 @@
+name: model-wine-quality
+
+on: [push]
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    container: docker://dvcor/cml-py3:latest
+
+    steps:
+      # Checkout the repository to the workflow
+      - uses: actions/checkout@v2
+        name: Checkout code
+        env:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Install dependencies and train the model
+      - name: Train model
+        run: |
+          pip install -r requirements.txt  # Install dependencies from requirements.txt
+          python train.py  # Run the training script
+
+          # Log model metrics
+          echo "MODEL METRICS" > report.md
+          cat metrics.txt >> report.md
+
+      # Add visualizations and metrics to report
+      - name: Add metrics and visualizations
+        run: |
+          # Add section and metrics to report.md
+          echo "## Model metrics" >> report.md
+          cat metrics.txt >> report.md
+
+          # Add data visualization section and publish images
+          echo "## Data viz" >> report.md
+          cml-publish feature_importance.png --md >> report.md
+          cml-publish residuals.png --md >> report.md
+
+    
