@@ -9,10 +9,10 @@ jobs:
 
     steps:
       # Checkout the repository
-      - uses: actions/checkout@v2
-        name: Checkout code
-        env:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}  # Pass the GitHub token to the environment for checkout
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}  # Pass the GitHub token to the environment for checkout
 
       # Install dependencies and train the model
       - name: Train model
@@ -31,16 +31,19 @@ jobs:
           cat metrics.txt >> report.md
 
           echo "## Data viz" >> report.md
-          cml comment create feature_importance.png --md >> report.md
-          cml comment create residuals.png --md >> report.md
+          echo "![](./feature_importance.png)" >> report.md
+          echo "![](./residuals.png)" >> report.md
 
           # Publish the report as a comment
           cml comment create report.md
         env:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}  # Ensure that the token is passed here
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Ensure that the token is passed here
 
       # Optional: Publish the final report
       - name: Publish final report
         run: |
           echo "## Summary Report" > summary_report.md
           cat report.md >> summary_report.md
+          cml comment create summary_report.md
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
